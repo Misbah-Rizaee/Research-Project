@@ -1,0 +1,93 @@
+{% extends 'partial/layout-static-data.html' %}
+
+{% block content %}
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>results page</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+
+    <div class="container">
+        <form action="/static-data" method="post">
+            <div class="form-group">
+                <label for="topic">Please enter the topic(s). Note: to search for more than one topic, please use space
+                    in between the words</label>
+                <input class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                       type="text" id="first_query" name="first_query"><br>
+                <label for="topic">Please enter the number of tweets:</label>
+                <input class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                       type="number" id="second_query" name="second_query"><br>
+            </div>
+            <input onclick="return myFunction()" type="submit" name="start_button"
+                   class="btn btn-primary btn-lg btn-block" value="Start">
+        </form>
+    </div>
+    <div style="padding-bottom: 50px"></div>
+    <div id="container"></div>
+
+    <div style="padding-bottom: 50px"></div>
+    <div id="container2"></div>
+    </body>
+    <script>
+        function myFunction() {
+            var topic = document.getElementById("first_query");
+            var num_of_tweets = document.getElementById("second_query");
+            globalQ = topic.value;
+            if (topic !== null && topic.value === "" || isNaN(parseInt(num_of_tweets.value))) {
+                alert("Please Enter Valid Values");
+                return false;
+            }
+
+            const options = {
+                chart: {
+                    type: 'column',
+                    zoomType: 'xy'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Exposure '
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        animation: false
+                    }
+                }
+            };
+
+            options.data = {
+                csvURL: 'http://127.0.0.1:5000/send_data_to_static_data',
+                enablePolling: true,
+                dataRefreshRate: 2
+            };
+            options.title = {
+                text: 'Tweets have been analyzed. The data is based around (' + globalQ.split(" ").join(" & ").toLowerCase() + ')'
+            }
+            Highcharts.chart('container', options);
+
+            options.data = {
+                csvURL: 'http://127.0.0.1:5000/send_data_to_static_data_2',
+                enablePolling: true,
+                dataRefreshRate: 2
+            };
+            options.title = {
+                text: '5 most frequent words'
+            }
+            Highcharts.chart('container2', options);
+        }
+    </script>
+    </html>
+{% endblock %}

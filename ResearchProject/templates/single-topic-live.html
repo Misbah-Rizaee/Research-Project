@@ -1,0 +1,93 @@
+{% extends 'partial/layout-single-topic-live.html' %}
+
+{% block content %}
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>results page</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+
+    <div class="container">
+        <form action="/single-topic-live" method="post">
+            <div class="form-group">
+                <label for="topic">Please enter the topic(s). Note: to search for more than one topic, please use space in between the words</label>
+                <input class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                       type="text" id="query" name="query"><br>
+            </div>
+            <input onclick="return myFunction()" type="submit" name="submit_button"
+                   class="btn btn-primary btn-lg btn-block" value="Start Stream">
+            <input type="submit" name="submit_button" class="btn btn-primary btn-lg btn-block" value="Stop Stream">
+        </form>
+    </div>
+
+    <div style="padding-bottom: 50px"></div>
+    <div id="container"></div>
+
+    <div style="padding-bottom: 50px"></div>
+    <div id="container2"></div>
+
+    </body>
+    <script>
+        {#console.log("{{ finalTopic }}")#}
+
+        function myFunction() {
+            var topic = document.getElementById("query");
+            globalQ = topic.value;
+            if (topic !== null && topic.value === "") {
+                alert("Please Enter a Query");
+                return false;
+            }
+
+            const options = {
+                chart: {
+                    type: 'column',
+                    zoomType: 'xy'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Exposure '
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        animation: false
+                    }
+                }
+            };
+
+            options.data = {
+                csvURL: 'http://127.0.0.1:5000/send_data_to_single_topic_live',
+                enablePolling: true,
+                dataRefreshRate: 2
+            };
+            options.title = {
+                text: 'Tweets have been analyzed. The data is based around (' + globalQ.split(" ").join(" & ").toLowerCase() + ')'
+            }
+            Highcharts.chart('container', options);
+
+            options.data = {
+                csvURL: 'http://127.0.0.1:5000/send_data_to_single_topic_live_2',
+                enablePolling: true,
+                dataRefreshRate: 2
+            };
+            options.title = {
+                text: '5 most frequent words'
+            }
+            Highcharts.chart('container2', options);
+        }
+    </script>
+    </html>
+{% endblock %}
