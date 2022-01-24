@@ -44,25 +44,6 @@ def send_data_to_static_data():
         return '', 204
 
 
-# STATIC_DATA (DISPLAY MOST OCCURRED WORDS IN LIVE CHART)
-@app.route('/send_data_to_static_data_2', methods=['GET', 'POST'])
-def send_data_to_static_data_2():
-    if os.path.isfile("static/CSV/staticData2.json"):
-        file = open("static/CSV/staticData2.json")
-        data = json.load(file)
-        file.close()
-
-        response = make_response(json.dumps(data))
-        response.content_type = 'application/json'
-        return "Words," + data[0][1] + "," + data[0][2] + "," + data[0][3] + "," + data[0][4] + "," + data[0][
-            5] + " \n Number Of Words," + data[1][1] + "," + data[1][2] + "," + data[1][3] + "," + data[1][4] + "," + \
-               data[1][5]
-    else:
-        print("File does not exist! FileNotFoundError has occurred")
-        return '', 204
-
-# *********************************
-
 @app.route('/single-topic-live', methods=['GET', 'POST'])
 def single_topic_live():
     if request.method == "POST":
@@ -89,24 +70,6 @@ def send_data_to_single_topic_live():
         return '', 204
 
 
-# SINGLE-TOPIC-LIVE (DISPLAY MOST OCCURRED WORDS IN LIVE CHART)
-@app.route('/send_data_to_single_topic_live_2', methods=['GET', 'POST'])
-def send_data_to_single_topic_live_2():
-    if os.path.isfile("static/CSV/singleTopic2.json"):
-        file = open("static/CSV/singleTopic2.json")
-        data = json.load(file)
-        file.close()
-
-        response = make_response(json.dumps(data))
-        response.content_type = 'application/json'
-        return "Words," + data[0][1] + "," + data[0][2] + "," + data[0][3] + "," + data[0][4] + "," + data[0][
-            5] + " \n Number Of Words," + data[1][1] + "," + data[1][2] + "," + data[1][3] + "," + data[1][4] + "," + \
-               data[1][5]
-    else:
-        print("File does not exist! FileNotFoundError has occurred")
-        return '', 204
-
-
 @app.route('/about-application')
 def about_application():
     return render_template('about-application.html')
@@ -115,4 +78,4 @@ def about_application():
 if __name__ == '__main__':
     app.run()
 
-# DONEEEEEEEEEEEEEEEE
+# DONEEE

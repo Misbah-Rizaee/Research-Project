@@ -17,21 +17,10 @@ from twitter_auth import API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 positive = []
 negative = []
 neutral = []
-words_in_tweet = []
-
-excluded_words = ['a', 'an', 'on', 'in', 'to', 'under', 'behind', 'and', 'but', 'because', 'the', 'i', 'me', 'you',
-                  'we', 'he', 'him', 'she', 'her', 'it', 'is', 'they', 'it', 'this', 'have', 'had', 'of', 'at',
-                  'our', 'with', 'which', 'for', 'was', 'were', ';', 'has', 'by', 'are', 'if', 'so', 'when', 'that',
-                  'who', 'not', 'from', 'like', 'his', 'as', 'all', 'do', 'did', 'just', 'be', '&amp', 'my', 'am',
-                  'can', 'why', 'vs', 'no', 'yes', 'or', 'about', 'what', 'how', 'their', 'them', 'very',
-                  'your', 'yours', 'would', 'will', 'now', 'should', 'always', 'one', 'two', 'three', 'more',
-                  'most', 'please', 'these', 'those', 'didn\'t', 'don\'t', 'some', 'same', 'any', 'won\'t',
-                  'wouldn\'t', 'you\'re', 'we\'re', 'it\'s', 'until', 'must', 'here', 'there', 'many', 'over', 'been',
-                  'get', 'want', 'new', 'up', 'down', 'also', 'go', 'us', 'know', 'need']
 
 
-# Remove URL and EMOJI from the tweets' text
-def remove_url_emoji(text):
+# Clean data
+def preprocess(text):
     # Remove URL
     text = re.sub(r'https://t.co/\w{10}', '', text)
 
@@ -56,35 +45,26 @@ def remove_url_emoji(text):
                                u"\ufe0f"  # dingbats
                                u"\u3030"
                                "]+", flags=re.UNICODE)
-
     text = emoji_pattern.sub(r'', text)
 
-    # Remove \n and \t From the text
     text = text.replace('\n', " ")
     text = text.replace('\t', " ")
 
+    # UTF-8 characters
+    text = re.sub(r"Â", "", text);
+    text = re.sub(r"â€™", "'", text);
+    text = re.sub(r"â€œ", '"', text);
+    text = re.sub(r'â€“', '-', text);
+    text = re.sub(r'â€', '"', text);
+
+    text = re.sub(r'&amp', 'and', text);  # &
+    text = re.sub(r'&lt;', ' ', text);  # <
+    text = re.sub(r'&gt;', ' ', text);  # >
+    text = re.sub(r'&le;', ' ', text);  # less-than or equals sign
+    text = re.sub(r'&ge;', ' ', text);  # greater-than or equals sign
+    text = re.sub(r'\xa0', ' ', text);  # non-breaking space
+
     return text
-
-
-# Find the most occurred words
-def words_occurrences(text):
-    # Append text only to text_list
-    text = re.sub(r"[-\"()#@;:.<>{}!?,]", "", text)  # Exclude Special Characters
-
-    # Split the words of each tweet
-    words_in_tweet.append(text.lower().split())
-
-    excluded_topics = topic.split()
-    joined_excluded_words = excluded_topics + excluded_words
-
-    # List of all words across tweets
-    all_words_in_tweet = [word for wordList in words_in_tweet for word in wordList if not word in joined_excluded_words]
-    # Create counter
-    counts = collections.Counter(all_words_in_tweet)
-    # Get 5 most occurred words
-    counts.most_common(5)
-
-    return counts.most_common(5)
 
 
 # ANALYZING THE TWEETS
@@ -95,25 +75,21 @@ def analyze_tweets(data, neu=neutral, pos=positive, neg=negative):
         text = data.extended_tweet['full_text']
 
     # CHECK IF IT IS NOT RETWEET
-    # if not data.retweeted and 'RT @' not in text:
-    if not data.retweeted and 'RT @' not in text and len(check_length(remove_url_emoji(text))) >= 5:
-        text = remove_url_emoji(text)
+    if not data.retweeted and 'RT @' not in text:
+        text = preprocess(text)
 
-        analysis = TextBlob(text)
-        polarity = analysis.sentiment.polarity
+        analyser = SentimentIntensityAnalyzer()
+        score = analyser.polarity_scores(text)
 
-        if polarity == 0:
-            neu.append(1)
-        elif 1 >= polarity > 0:
-            pos.append(1)
-        elif 0 > polarity >= -1:
-            neg.append(1)
-
-        # FIND 5 MOST OCCURRED WORDS
-        most_occurred_words = words_occurrences(text)
+        if score['compound'] == 0:
+            neutral.append(1)
+        elif 1 >= score['compound'] > 0:
+            positive.append(1)
+        elif 0 > score['compound'] >= -1:
+            negative.append(1)
 
         # CREATE THE JSON FILES
-        create_json_files_with_data(neu, pos, neg, most_occurred_words)
+        create_json_files_with_data(neu, pos, neg)
 
         # CREATE THE CSV FILE
         mined = {
@@ -139,7 +115,6 @@ class Listener(tweepy.Stream):
     def on_status(self, data):
         analyze_tweets(data)
         app.send_data_to_single_topic_live();
-        app.send_data_to_single_topic_live_2();
         return True
 
     def on_error(self, status_code):
@@ -170,7 +145,6 @@ def clear_arrays():
     positive.clear()
     negative.clear()
     neutral.clear()
-    words_in_tweet.clear()
 
 
 # FIX - CREATE EMPTY JSON FILES TO AVOID (No such file or directory: 'static/CSV/singleTopic1.json') ERROR
@@ -182,30 +156,14 @@ def create_empty_json_files():
     with open("static/CSV/singleTopic1.json", "w") as outfile:
         json.dump(data, outfile)
 
-    # CREATE SAMPLE2 JSON FILE
-    data = [['Words', '1st Word', "2nd Word", "3rd Word", "4th Word", "5th Word"],
-            ['Number Of Words', str(0), str(0), str(0), str(0), str(0)]]
 
-    with open("static/CSV/singleTopic2.json", "w") as outfile:
-        json.dump(data, outfile)
-
-
-# # CREATE THE JSON FILES
-def create_json_files_with_data(neu, pos, neg, most_occurred_words):
+# CREATE THE JSON FILES
+def create_json_files_with_data(neu, pos, neg):
     # WRITE (POSITIVE, NEGATIVE, NEUTRAL) TO JSON FILE
     data = [['Analysis', 'positive', 'neutral', 'negative'],
             ['Number Of Tweets', str(sum(pos)), str(sum(neu)), str(sum(neg))]]
 
     with open("static/CSV/singleTopic1.json", "w") as outfile:
-        json.dump(data, outfile)
-
-    # WRITE (MOST OCCURRED WORDS) TO JSON FILE
-    data = [['Words', most_occurred_words[0][0], most_occurred_words[1][0], most_occurred_words[2][0],
-             most_occurred_words[3][0], most_occurred_words[4][0]],
-            ['Number Of Words', str(most_occurred_words[0][1]), str(most_occurred_words[1][1]), str(
-                most_occurred_words[2][1]), str(most_occurred_words[3][1]), str(most_occurred_words[4][1])]]
-
-    with open("static/CSV/singleTopic2.json", "w") as outfile:
         json.dump(data, outfile)
 
 
@@ -215,7 +173,7 @@ def create_csv_files(mined):
         'static/CSV/singleTopic-{}.csv'.format(topic.replace(' ', "-")))  # Check if CSV exists
     # Write to CSV file
     with open('static/CSV/singleTopic-{}.csv'.format(topic.replace(' ', "-")), 'a', newline='',
-              encoding="utf-8") as outputFile:
+              encoding="utf-8-sig") as outputFile:
         writer = csv.DictWriter(outputFile, mined.keys())
 
         # Using dictionary keys as Column name for the CSV file if CSV doesn't exists
@@ -226,20 +184,4 @@ def create_csv_files(mined):
     outputFile.close()
 
 
-# FIX - CHECK TWEET TEXT LENGTH WITHOUT EXCLUDED WORDS TO AVOID (list index out of range handle) ERROR
-def check_length(text):
-    # Append text only to text_list
-    text = re.sub(r"[-\"()#@;:.<>{}!?,]", "", text)  # Exclude Special Characters
-
-    # Split the words of each tweet
-    words_in_tweet_check_length = text.lower().split()
-
-    excluded_topics = topic.split()
-    joined_excluded_words = excluded_topics + excluded_words
-
-    # List of all words across tweets
-    all_words_in_tweet = [word for word in words_in_tweet_check_length if not word in joined_excluded_words]
-
-    return all_words_in_tweet
-
-# DONEEEEEEEEEEEEEEEEEE
+# DONEEEE

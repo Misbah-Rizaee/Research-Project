@@ -37,9 +37,7 @@
     </div>
     <div style="padding-bottom: 50px"></div>
     <div id="container"></div>
-
-    <div style="padding-bottom: 50px"></div>
-    <div id="container2"></div>
+    
     </body>
     <script>
         function myFunction() {
@@ -77,16 +75,6 @@
                 text: 'Tweets have been analyzed. The data is based around (' + globalQ.split(" ").join(" & ").toLowerCase() + ')'
             }
             Highcharts.chart('container', options);
-
-            options.data = {
-                csvURL: 'http://127.0.0.1:5000/send_data_to_static_data_2',
-                enablePolling: true,
-                dataRefreshRate: 2
-            };
-            options.title = {
-                text: '5 most frequent words'
-            }
-            Highcharts.chart('container2', options);
         }
     </script>
     </html>
