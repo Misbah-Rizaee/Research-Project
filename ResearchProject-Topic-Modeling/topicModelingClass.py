@@ -19,7 +19,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pyLDAvis.gensim_models
 
-data = pd.read_csv("staticData-global-warming.csv")
+# data = pd.read_csv("static/staticData-global-warming.csv")
+# data = pd.read_csv("static/staticData-refugee.csv")
+data = pd.read_csv("static/staticData-afghanistan.csv")
 
 stopword = stopwords.words('english')
 # Removing stopwords from the tweets
@@ -40,8 +42,6 @@ def preprocess_tweets(tweet):
 
 
 corpus = preprocess_tweets(data)
-
-print(corpus)
 
 # Creating bag of words model using gensim
 dic = gensim.corpora.Dictionary(corpus)
@@ -65,7 +65,7 @@ for idx, topic in lda_model.print_topics(-1):
 
 # Visualize the topics
 vis = pyLDAvis.gensim_models.prepare(lda_model, bow_corpus, dic)
-pyLDAvis.save_html(vis, 'LDA_Visualization.html')
+pyLDAvis.save_html(vis, 'LDA-Topics.html')
 
 
 # Plot
@@ -79,6 +79,7 @@ for i in range(10):
     sns.barplot(x='prob', y=df.index, data=df, label='Cities', palette='Reds_d')
     plt.xlabel('probability')
 
+plt.savefig('LDA-Topics.png')
 plt.show()
 
-# DONEE
+# DONEEE

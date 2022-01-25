@@ -63,7 +63,8 @@ def preprocess(text):
     return text
 
 
-def analyze_tweets(api, topic, num_of_tweets):
+def analyze_tweets(auth, topic, num_of_tweets):
+    api = tweepy.API(auth, wait_on_rate_limit=True)
     downloaded_tweets = tweepy.Cursor(api.search_tweets, q="{} -filter:retweets -filter:links".format(topic),
                                       lang="en",
                                       tweet_mode='extended').items(num_of_tweets)
@@ -104,7 +105,7 @@ def analyze_tweets(api, topic, num_of_tweets):
     # print(df.to_string())
 
 
-def start_get_tweets(api):
+def start_get_tweets(auth):
     if request.form['start_button'] == 'Start':
         create_empty_json_files()
         global topic  # MAKE THE TOPIC A GLOBAL VARIABLE
@@ -112,7 +113,7 @@ def start_get_tweets(api):
         topic = request.form['first_query']
         num_of_tweets = int(request.form['second_query'])
         clear_arrays()
-        analyze_tweets(api, topic, num_of_tweets)
+        analyze_tweets(auth, topic, num_of_tweets)
     else:
         return render_template('static-data.html')
 
@@ -160,4 +161,4 @@ def create_csv_files(mined):
         writer.writerow(mined)
     outputFile.close()
 
-## DONEEEE
+## DONEEEEEE

@@ -21,7 +21,7 @@ def home():
 @app.route('/static-data', methods=['GET', 'POST'])
 def static_data_function():
     if request.method == "POST":
-        staticDataClass.start_get_tweets(api)
+        staticDataClass.start_get_tweets(auth)
         return '', 204
     else:
         return render_template('static-data.html')
@@ -78,4 +78,4 @@ def about_application():
 if __name__ == '__main__':
     app.run()
 
-# DONEEE
+# DONEEEEE
