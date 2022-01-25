@@ -7,6 +7,7 @@ import csv
 import datetime
 import os
 import app
+import matplotlib.pyplot as plt
 
 from flask import Flask, render_template, request, jsonify, make_response
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -22,53 +23,14 @@ neutral = []
 # Clean data
 def preprocess(text):
     # Remove URL
-    text = re.sub(r'https://t.co/\w{10}', '', text)
-
-    # Remove EMOJI
-    emoji_pattern = re.compile("["
-                               u"\U0001F600-\U0001F64F"  # emoticons
-                               u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-                               u"\U0001F680-\U0001F6FF"  # transport & map symbols
-                               u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                               u"\U00002500-\U00002BEF"  # chinese char
-                               u"\U00002702-\U000027B0"
-                               u"\U00002702-\U000027B0"
-                               u"\U000024C2-\U0001F251"
-                               u"\U0001f926-\U0001f937"
-                               u"\U00010000-\U0010ffff"
-                               u"\u2640-\u2642"
-                               u"\u2600-\u2B55"
-                               u"\u200d"
-                               u"\u23cf"
-                               u"\u23e9"
-                               u"\u231a"
-                               u"\ufe0f"  # dingbats
-                               u"\u3030"
-                               "]+", flags=re.UNICODE)
-    text = emoji_pattern.sub(r'', text)
-
-    text = text.replace('\n', " ")
-    text = text.replace('\t', " ")
-
-    # UTF-8 characters
-    text = re.sub(r"Â", "", text);
-    text = re.sub(r"â€™", "'", text);
-    text = re.sub(r"â€œ", '"', text);
-    text = re.sub(r'â€“', '-', text);
-    text = re.sub(r'â€', '"', text);
-
-    text = re.sub(r'&amp', 'and', text);  # &
-    text = re.sub(r'&lt;', ' ', text);  # <
-    text = re.sub(r'&gt;', ' ', text);  # >
-    text = re.sub(r'&le;', ' ', text);  # less-than or equals sign
-    text = re.sub(r'&ge;', ' ', text);  # greater-than or equals sign
-    text = re.sub(r'\xa0', ' ', text);  # non-breaking space
-
+    text = re.sub(r"http\S+", " ", text)
+    text = re.sub('[^a-zA-Z0-9\'’!?]', ' ', text)
+    text = ' '.join(text.split())
     return text
 
 
 # ANALYZING THE TWEETS
-def analyze_tweets(data, neu=neutral, pos=positive, neg=negative):
+def analyze_tweets(data):
     if not data.truncated:
         text = data.text
     else:
@@ -89,7 +51,7 @@ def analyze_tweets(data, neu=neutral, pos=positive, neg=negative):
             negative.append(1)
 
         # CREATE THE JSON FILES
-        create_json_files_with_data(neu, pos, neg)
+        create_json_files_with_data()
 
         # CREATE THE CSV FILE
         mined = {
@@ -136,6 +98,8 @@ def start_streaming():
         twitterStream.filter(track=[topic], languages=["en"])
     elif request.form['submit_button'] == 'Stop Stream':
         twitterStream.disconnect()
+        # PLOT A BAR CHART
+        bar_chart()
     else:
         return render_template('home.html')
 
@@ -158,10 +122,10 @@ def create_empty_json_files():
 
 
 # CREATE THE JSON FILES
-def create_json_files_with_data(neu, pos, neg):
+def create_json_files_with_data():
     # WRITE (POSITIVE, NEGATIVE, NEUTRAL) TO JSON FILE
     data = [['Analysis', 'positive', 'neutral', 'negative'],
-            ['Number Of Tweets', str(sum(pos)), str(sum(neu)), str(sum(neg))]]
+            ['Number Of Tweets', str(sum(positive)), str(sum(neutral)), str(sum(negative))]]
 
     with open("static/CSV/singleTopic1.json", "w") as outfile:
         json.dump(data, outfile)
@@ -184,4 +148,18 @@ def create_csv_files(mined):
     outputFile.close()
 
 
-# DONEEEE
+# PLOT IN A BAR CHART
+def bar_chart():
+    x = ['Positive', 'Neutral', 'Negative']
+    h = [sum(positive), sum(neutral), sum(negative)]
+    c = ["blue", "grey", "green"]
+
+    plt.bar(x, h, align='center', color=c)
+    plt.xlabel("Sentiment")
+    plt.ylabel('Number of Tweets')
+    plt.title('The data is based around ({})'.format(topic))
+
+    plt.savefig('static/singleTopic-{}.png'.format(topic))
+    plt.show()
+
+# DONEE
