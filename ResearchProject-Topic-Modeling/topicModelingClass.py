@@ -10,7 +10,7 @@ import nltk
 from nltk.stem import PorterStemmer
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords, wordnet
-from nltk.stem import WordNetLemmatizer
+from nltk.stem import WordNetLemmatizer, PorterStemmer
 
 import gensim
 from gensim import corpora
@@ -19,9 +19,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pyLDAvis.gensim_models
 
-# data = pd.read_csv("static/staticData-global-warming.csv")
+data = pd.read_csv("static/CSV/staticData-global-warming.csv")
 # data = pd.read_csv("static/staticData-refugee.csv")
-data = pd.read_csv("static/staticData-afghanistan.csv")
+# data = pd.read_csv("static/staticData-afghanistan.csv")
 
 stopword = stopwords.words('english')
 # Removing stopwords from the tweets
@@ -30,11 +30,12 @@ data['text'] = data['text'].astype(str).apply(lambda x: " ".join(x for x in x.sp
 
 def preprocess_tweets(tweet):
     corpus = []
-    stem = PorterStemmer()
+    stemmer = PorterStemmer()
     lem = WordNetLemmatizer()
 
     for tweets in tweet['text']:
         words = [w for w in word_tokenize(tweets) if (w not in stopword)]
+        # words = [stemmer.stem(w) for w in word_tokenize(tweets) if (w not in stopword)]
         words = [lem.lemmatize(w) for w in words if len(w) > 2]
         corpus.append(words)
 
@@ -65,7 +66,7 @@ for idx, topic in lda_model.print_topics(-1):
 
 # Visualize the topics
 vis = pyLDAvis.gensim_models.prepare(lda_model, bow_corpus, dic)
-pyLDAvis.save_html(vis, 'LDA-Topics.html')
+pyLDAvis.save_html(vis, 'static/LDA-Topics.html')
 
 
 # Plot
@@ -79,7 +80,7 @@ for i in range(10):
     sns.barplot(x='prob', y=df.index, data=df, label='Cities', palette='Reds_d')
     plt.xlabel('probability')
 
-plt.savefig('LDA-Topics.png')
+plt.savefig('static/LDA-Topics.png')
 plt.show()
 
-# DONEEE
+# DONEEEEE

@@ -43,12 +43,18 @@ def analyze_tweets(data):
         analyser = SentimentIntensityAnalyzer()
         score = analyser.polarity_scores(text)
 
+        # ADD EXTRA COLUMN TO CSV (SENTIMENT ANALYSIS)
+        analysis = ""
+
         if score['compound'] == 0:
             neutral.append(1)
+            analysis = "Neutral"
         elif 1 >= score['compound'] > 0:
             positive.append(1)
+            analysis = "Positive"
         elif 0 > score['compound'] >= -1:
             negative.append(1)
+            analysis = "Negative"
 
         # CREATE THE JSON FILES
         create_json_files_with_data()
@@ -57,15 +63,10 @@ def analyze_tweets(data):
         mined = {
             'tweet_id': data.id,
             'name': data.user.name,
-            'screen_name': data.user.screen_name,
             'retweet_count': data.retweet_count,
             'text': text,
             'created_at': data.created_at,
-            'favourite_count': data.favorite_count,
-            'hashtags': data.entities['hashtags'],
-            'status_count': data.user.statuses_count,
-            'location': data.place,
-            'source_device': data.source
+            'Analysis': analysis
         }
 
         create_csv_files(mined)
@@ -162,4 +163,4 @@ def bar_chart():
     plt.savefig('static/singleTopic-{}.png'.format(topic))
     plt.show()
 
-# DONEE
+# DONEEE
