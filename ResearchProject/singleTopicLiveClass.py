@@ -66,7 +66,8 @@ def analyze_tweets(data):
             'retweet_count': data.retweet_count,
             'text': text,
             'created_at': data.created_at,
-            'Analysis': analysis
+            'analysis': analysis,
+            'analysis_score': score['compound']
         }
 
         create_csv_files(mined)
@@ -100,7 +101,7 @@ def start_streaming():
     elif request.form['submit_button'] == 'Stop Stream':
         twitterStream.disconnect()
         # PLOT A BAR CHART
-        bar_chart()
+        # bar_chart()
     else:
         return render_template('home.html')
 
@@ -163,4 +164,4 @@ def bar_chart():
     plt.savefig('static/singleTopic-{}.png'.format(topic))
     plt.show()
 
-# DONEEE
+# DONEEEEE

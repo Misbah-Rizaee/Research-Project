@@ -56,7 +56,8 @@ def analyze_tweets(auth, topic, num_of_tweets):
             'retweet_count': tweet.retweet_count,
             'text': text,
             'created_at': tweet.created_at,
-            'Analysis': analysis
+            'analysis': analysis,
+            'analysis_score': score['compound']
         }
 
         create_csv_files(mined)
@@ -65,7 +66,7 @@ def analyze_tweets(auth, topic, num_of_tweets):
     create_json_files_with_data()
 
     # PLOT A BAR CHART
-    bar_chart()
+    # bar_chart()
 
     # df = pd.DataFrame(text_list)
     # print(df.to_string())
@@ -142,4 +143,4 @@ def bar_chart():
     plt.savefig('static/staticData-{}.png'.format(topic))
     plt.show()
 
-# DONEEE
+# DONEEEE
