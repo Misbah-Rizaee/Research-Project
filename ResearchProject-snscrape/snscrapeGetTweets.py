@@ -7,9 +7,10 @@ import time
 
 tweets_list2 = []
 
-topic = "afghanistan refugee"
-# topic = "global warming"
-num_of_tweets = 99  # 50 tweets
+
+topic = "(refugee OR refugees) camp"
+# topic = "(blue OR red) (milan OR inter)"
+num_of_tweets = 499  # 50 tweets
 
 positive = []
 negative = []
@@ -28,9 +29,9 @@ def preprocess(text):
 # STORE DATA IN A CSV FILE
 def create_csv_files(mined):
     csv_exsits = os.path.exists(
-        'static/staticData-{}.csv'.format(topic.replace(' ', "-")))  # Check if CSV exists
+        'static/staticData-{}.csv'.format(topic.replace(' OR ', "-").replace(' ', "-")))  # Check if CSV exists
     # Write to CSV file
-    with open('static/staticData-{}.csv'.format(topic.replace(' ', "-")), 'a', newline='',
+    with open('static/staticData-{}.csv'.format(topic.replace(' OR ', "-").replace(' ', "-")), 'a', newline='',
               encoding="utf-8-sig") as outputFile:
         writer = csv.DictWriter(outputFile, mined.keys())
 
@@ -43,7 +44,7 @@ def create_csv_files(mined):
 
 
 def download_old_tweets():
-    with open("static/dates.csv") as file:
+    with open("static/Yearly/2021.csv") as file:
         reader = csv.reader(file)
         for row in reader:
             print("From: "+row[0]+" To: "+row[1])
@@ -83,8 +84,8 @@ def download_old_tweets():
 
                 create_csv_files(mined)
 
-            time.sleep(180)  # SECOND
+            time.sleep(61)  # SECOND
 
 download_old_tweets()
 
-# DONEEE
+# DONEEEE
