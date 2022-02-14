@@ -19,7 +19,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pyLDAvis.gensim_models
 
-data = pd.read_csv("static/CSV/staticData-global-warming.csv")
+data = pd.read_csv("static/CSV/staticData-(afghanistan-afghan)-(refugee-refugees).csv")
 # data = pd.read_csv("static/staticData-refugee.csv")
 # data = pd.read_csv("static/staticData-afghanistan.csv")
 
@@ -68,6 +68,9 @@ for idx, topic in lda_model.print_topics(-1):
 vis = pyLDAvis.gensim_models.prepare(lda_model, bow_corpus, dic)
 pyLDAvis.save_html(vis, 'static/LDA-Topics.html')
 
+# OPEN IT DIRECTLY IN CHROME
+import webbrowser, os
+webbrowser.open('file://' + os.path.realpath("static/LDA-Topics.html"))
 
 # Plot
 fiz = plt.figure(figsize=(15, 30))
@@ -83,4 +86,4 @@ for i in range(10):
 plt.savefig('static/LDA-Topics.png')
 plt.show()
 
-# DONEEEEE
+# DONEEE
