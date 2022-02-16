@@ -9,6 +9,11 @@ retweet_sum = data.groupby(pd.Grouper(key='analysis'))['retweet_count'].sum().dr
 retweet_sum.set_index("analysis", inplace=True)
 # print(retweet_sum)
 
+def add_value_label(x_list, y_list):
+    for i in range(len(x_list)):
+        # plt.text(i, y_list[i], y_list[i], ha="center")
+        plt.text(i, y_list[i] / 2, y_list[i], ha="center")
+
 # PLOT THE ANALYSIS SCORE
 x = ['Positive', 'Neutral', 'Negative']
 h = [retweet_sum.loc['Positive']['retweet_count'], retweet_sum.loc['Neutral']['retweet_count'], retweet_sum.loc['Negative']['retweet_count']]
@@ -18,6 +23,7 @@ plt.xlabel("Sentiment status")
 plt.ylabel('Sum of retweets')
 plt.title('Sum of retweets per Sentiment status')
 plt.grid(axis='y')
+add_value_label(x, h)
 plt.savefig('static/Sentiment-Sum-Retweets.png', bbox_inches='tight')
 plt.show()
 
@@ -40,4 +46,4 @@ plt.savefig('static/Sentiment-Mean-Score.png', bbox_inches='tight')
 plt.show()
 
 
-# DONEE
+# DONEEEE

@@ -15,6 +15,11 @@ print(sentAnalysis.get('Neutral', 0))
 print(sentAnalysis.get('Negative', 0))
 
 
+def add_value_label(x_list, y_list):
+    for i in range(len(x_list)):
+        # plt.text(i, y_list[i], y_list[i], ha="center")
+        plt.text(i, y_list[i ] / 2, y_list[i], ha="center")
+
 # PLOT IN A BAR CHART
 def bar_chart():
     x = ['Positive', 'Neutral', 'Negative']
@@ -26,10 +31,11 @@ def bar_chart():
     plt.ylabel('Number of Tweets')
     plt.title('Sentiment status of the tweets')
     plt.grid(axis='y')
+    add_value_label(x, h)
     plt.savefig('static/Sentiment-Analysis.png')
     plt.show()
 
 
 bar_chart()
 
-# DONEEEE
+# DONEEEEEEE

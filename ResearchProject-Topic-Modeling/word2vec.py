@@ -5,10 +5,11 @@ import pandas as pd
 from gensim.models import Word2Vec
 from nltk.corpus import stopwords
 
-topic = 'war'
+topic = 'refugee'
 
 data = pd.read_csv("static/CSV/staticData-(afghanistan-afghan)-(refugee-refugees).csv")
 # data = pd.read_csv("static/CSV/singleTopic-hello.csv")
+
 text = [text.lower() for text in data["text"]]
 
 sentences = [nltk.word_tokenize(sentence) for sentence in text]
@@ -29,6 +30,12 @@ similar = model.wv.most_similar(topic)
 print(similar)
 
 
+def add_value_label(x_list, y_list):
+    for i in range(len(x_list)):
+        # plt.text(i, y_list[i], y_list[i], ha="center")
+        plt.text(i, y_list[i] / 2, '{0:.4f}'.format(y_list[i]), ha="center", rotation=90)
+
+
 # PLOT IN THE GRAPH
 keys = []
 values = []
@@ -44,7 +51,8 @@ plt.ylabel('Probability')
 plt.title('Probability of other words that would appear with ({})'.format(topic), fontsize=10)
 plt.grid(axis='y')
 plt.xticks(rotation=90)
+add_value_label(keys, values)
 plt.savefig('static/Sentiment-Common-Words.png', bbox_inches='tight')
 plt.show()
 
-# DONEE
+# DONEEEEE
