@@ -7,9 +7,14 @@ from nltk.corpus import stopwords
 
 topic = 'refugee'
 
-data = pd.read_csv("static/CSV/staticData-(afghanistan-afghan)-(refugee-refugees).csv")
+data = pd.read_csv("static/CSV/staticData-refugee-refugees.csv")
 # data = pd.read_csv("static/CSV/singleTopic-hello.csv")
 
+# for text in data["text"]:
+#     if (isinstance(text, float)==True):
+#         print(text)
+
+data.dropna(inplace=True)
 text = [text.lower() for text in data["text"]]
 
 sentences = [nltk.word_tokenize(sentence) for sentence in text]
