@@ -29,9 +29,9 @@ def preprocess(text):
 # STORE DATA IN A CSV FILE
 def create_csv_files(mined):
     csv_exsits = os.path.exists(
-        'static/staticData-{}.csv'.format(topic.replace(' OR ', "-").replace(' ', "-")))  # Check if CSV exists
+        'static/staticData-{}.csv'.format(topic.replace(' OR ', "_").replace(' ', "-")))  # Check if CSV exists
     # Write to CSV file
-    with open('static/staticData-{}.csv'.format(topic.replace(' OR ', "-").replace(' ', "-")), 'a', newline='',
+    with open('static/staticData-{}.csv'.format(topic.replace(' OR ', "_").replace(' ', "-")), 'a', newline='',
               encoding="utf-8-sig") as outputFile:
         writer = csv.DictWriter(outputFile, mined.keys())
 
@@ -84,7 +84,7 @@ def download_old_tweets():
 
                 create_csv_files(mined)
 
-            time.sleep(61)  # SECOND
+            time.sleep(5)  # SECOND
 
 download_old_tweets()
 

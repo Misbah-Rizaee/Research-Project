@@ -11,14 +11,146 @@
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <script src="https://code.highcharts.com/modules/data.js"></script>
         <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+        <style>
+
+        </style>
     </head>
     <body>
 
-    <p>{{ text }}</p>
+    <div class="container">
+        <form action="/about-application" method="post">
+            <div class="form-group">
+                <label for="topic">Machine learning algorithms used: </label><br/>
+                <label for="topic"><strong>Sentiment analysis: </strong>To analyze and find the emotion or intent behind
+                    every tweet.</label><br/>
+                <label for="topic"><strong>Topic modelling (LDA): </strong>To find out the different topics that these
+                    tweets cover and group them by those topics.</label><br/>
+                <label for="topic"><strong>word2vec: </strong>To make highly accurate guesses about a word’s meaning based on
+                    past appearances.</label><br/><br/>
+                <label for="topic">Please choose a csv file from the static directory of the project:</label><br/>
+                <div class="btn btn-primary btn-lg btn-block">
+                    <label class="upload-btn">
+                        <input type="file" id="input-file" name="input-file" style="display:none" onchange="changeText()"/>
+                        <span id="selectedFileName" name="selectedFileName">Browse</span>
+                    </label>
+                </div>
+            </div>
+            <input onclick="return myFunction()" type="submit" name="start_button"
+                   class="btn btn-primary btn-lg btn-block" value="Start">
+        </form>
+    </div>
+    <div style="padding-bottom: 50px"></div>
+    <div id="container"></div>
+
+    <div style="padding-bottom: 50px"></div>
+    <div id="container2"></div>
+
+    <div style="padding-bottom: 50px"></div>
+    <div id="container3"></div>
 
     </body>
     <script>
+        function changeText() {
+            var y = document.getElementById("input-file").files[0].name;
+            document.getElementById("selectedFileName").innerHTML = y;
+        }
 
+        function myFunction() {
+            var topic = document.getElementById("input-file").files[0].name;
+
+            if (topic !== null && topic.value === "") {
+                alert("Please Enter Valid Values");
+                return false;
+            }
+
+            const options = {
+                chart: {
+                    type: 'column',
+                    zoomType: 'xy'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Exposure '
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        animation: false
+                    }
+                }
+            };
+
+            options.data = {
+                csvURL: 'http://127.0.0.1:5000/send_sentiment_data_to_about_application',
+                enablePolling: true,
+                dataRefreshRate: 2
+            };
+            options.title = {
+                text: 'Sentiment status of the tweets'
+            }
+            Highcharts.chart('container', options);
+
+
+            // SECOND CHART
+            const options2 = {
+                chart: {
+                    type: 'column',
+                    zoomType: 'xy'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Exposure '
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        animation: false
+                    }
+                },
+                colors: ['#FFC300', '#48C9B0', '#AAB7B8']
+            };
+
+            options2.data = {
+                csvURL: 'http://127.0.0.1:5000/send_retweet_data_to_about_application',
+                enablePolling: true,
+                dataRefreshRate: 2
+            };
+            options2.title = {
+                text: 'Sum of retweets per sentiment status'
+            }
+            Highcharts.chart('container2', options2);
+
+
+            // THIRD CHART
+            const options3 = {
+                chart: {
+                    type: 'column',
+                    zoomType: 'xy'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Exposure '
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        animation: false,
+                        showInLegend: false
+                    }
+                }
+            };
+
+            options3.data = {
+                csvURL: 'http://127.0.0.1:5000/send_average_data_to_about_application',
+                enablePolling: true,
+                dataRefreshRate: 2
+            };
+            options3.title = {
+                text: 'Weekly mean of sentiment status'
+            }
+            Highcharts.chart('container3', options3);
+        }
     </script>
     </html>
 {% endblock %}

@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 positive = []
 negative = []
 neutral = []
-
+sentiment_dict = {}
 
 # Clean data
 def preprocess(text):
@@ -63,7 +63,11 @@ def analyze_tweets(auth, topic, num_of_tweets):
         create_csv_files(mined)
 
     # CREATE THE JSON FILES
-    create_json_files_with_data()
+    # create_json_files_with_data()
+
+    sentiment_dict['positive'] = sum(positive)
+    sentiment_dict['neutral'] = sum(neutral)
+    sentiment_dict['negative'] = sum(negative)
 
     # PLOT A BAR CHART
     # bar_chart()
@@ -73,16 +77,13 @@ def analyze_tweets(auth, topic, num_of_tweets):
 
 
 def start_get_tweets(auth):
-    if request.form['start_button'] == 'Start':
-        create_empty_json_files()
-        global topic  # MAKE THE TOPIC A GLOBAL VARIABLE
-        global num_of_tweets  # MAKE THE Number A GLOBAL VARIABLE
-        topic = request.form['first_query']
-        num_of_tweets = int(request.form['second_query'])
-        clear_arrays()
-        analyze_tweets(auth, topic, num_of_tweets)
-    else:
-        return render_template('static-data.html')
+    # create_empty_json_files()
+    clear_arrays()
+    global topic  # MAKE THE TOPIC A GLOBAL VARIABLE
+    global num_of_tweets  # MAKE THE Number A GLOBAL VARIABLE
+    topic = request.form['first_query']
+    num_of_tweets = int(request.form['second_query'])
+    analyze_tweets(auth, topic, num_of_tweets)
 
 
 # WHEN SEARCHING NEW TOPIC, CLEAR ALL THE LISTS
@@ -90,34 +91,39 @@ def clear_arrays():
     positive.clear()
     negative.clear()
     neutral.clear()
+    sentiment_dict.clear()
 
 
 # FIX - CREATE EMPTY JSON FILES TO AVOID (No such file or directory: 'static/CSV/staticData1.json') ERROR
-def create_empty_json_files():
-    # CREATE SAMPLE JSON FILE
-    data = [['Analysis', 'positive', 'neutral', 'negative'],
-            ['Number Of Tweets', str(0), str(0), str(0)]]
-
-    with open("static/CSV/staticData1.json", "w") as outfile:
-        json.dump(data, outfile)
+# def create_empty_json_files():
+#     # CREATE SAMPLE JSON FILE
+#     data = [['Analysis', 'positive', 'neutral', 'negative'],
+#             ['Number Of Tweets', str(0), str(0), str(0)]]
+#
+#     with open("static/CSV/staticData1.json", "w") as outfile:
+#         json.dump(data, outfile)
 
 
 # CREATE THE JSON FILES
-def create_json_files_with_data():
-    # WRITE (POSITIVE, NEGATIVE, NEUTRAL) TO JSON FILE
-    data = [['Analysis', 'positive', 'neutral', 'negative'],
-            ['Number Of Tweets', str(sum(positive)), str(sum(neutral)), str(sum(negative))]]
+# def create_json_files_with_data():
+#     # WRITE (POSITIVE, NEGATIVE, NEUTRAL) TO JSON FILE
+#     data = [['Analysis', 'positive', 'neutral', 'negative'],
+#             ['Number Of Tweets', str(sum(positive)), str(sum(neutral)), str(sum(negative))]]
+#
+#     with open("static/CSV/staticData1.json", "w") as outfile:
+#         json.dump(data, outfile)
 
-    with open("static/CSV/staticData1.json", "w") as outfile:
-        json.dump(data, outfile)
+
+def send_sentiment_data():
+    return sentiment_dict
 
 
 # STORE DATA IN A CSV FILE
 def create_csv_files(mined):
     csv_exsits = os.path.exists(
-        'static/CSV/staticData-{}.csv'.format(topic.replace(' ', "-")))  # Check if CSV exists
+        'static/CSV/staticData-{}.csv'.format(topic.replace(' OR ', "_").replace(' ', "-")))  # Check if CSV exists
     # Write to CSV file
-    with open('static/CSV/staticData-{}.csv'.format(topic.replace(' ', "-")), 'a', newline='',
+    with open('static/CSV/staticData-{}.csv'.format(topic.replace(' OR ', "_").replace(' ', "-")), 'a', newline='',
               encoding="utf-8-sig") as outputFile:
         writer = csv.DictWriter(outputFile, mined.keys())
 
@@ -128,19 +134,4 @@ def create_csv_files(mined):
         writer.writerow(mined)
     outputFile.close()
 
-
-# PLOT IN A BAR CHART
-def bar_chart():
-    x = ['Positive', 'Neutral', 'Negative']
-    h = [sum(positive), sum(neutral), sum(negative)]
-    c = ["blue", "grey", "green"]
-
-    plt.bar(x, h, align='center', color=c)
-    plt.xlabel("Sentiment")
-    plt.ylabel('Number of Tweets')
-    plt.title('The data is based around ({})'.format(topic))
-
-    plt.savefig('static/staticData-{}.png'.format(topic))
-    plt.show()
-
-# DONEEEE
+# DONEEEEE

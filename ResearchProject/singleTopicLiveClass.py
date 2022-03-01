@@ -18,6 +18,7 @@ from twitter_auth import API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 positive = []
 negative = []
 neutral = []
+sentiment_dict = {}
 
 
 # Clean data
@@ -56,8 +57,9 @@ def analyze_tweets(data):
             negative.append(1)
             analysis = "Negative"
 
-        # CREATE THE JSON FILES
-        create_json_files_with_data()
+        sentiment_dict['positive'] = sum(positive)
+        sentiment_dict['neutral'] = sum(neutral)
+        sentiment_dict['negative'] = sum(negative)
 
         # CREATE THE CSV FILE
         mined = {
@@ -93,15 +95,12 @@ twitterStream = Listener(
 
 def start_streaming():
     if request.form['submit_button'] == 'Start Stream':
-        create_empty_json_files()
+        clear_arrays()
         global topic  # MAKE THE TOPIC A GLOBAL VARIABLE
         topic = request.form["query"]
-        clear_arrays()
         twitterStream.filter(track=[topic], languages=["en"])
     elif request.form['submit_button'] == 'Stop Stream':
         twitterStream.disconnect()
-        # PLOT A BAR CHART
-        # bar_chart()
     else:
         return render_template('home.html')
 
@@ -111,34 +110,19 @@ def clear_arrays():
     positive.clear()
     negative.clear()
     neutral.clear()
+    sentiment_dict.clear()
 
 
-# FIX - CREATE EMPTY JSON FILES TO AVOID (No such file or directory: 'static/CSV/singleTopic1.json') ERROR
-def create_empty_json_files():
-    # CREATE SAMPLE JSON FILE
-    data = [['Analysis', 'positive', 'neutral', 'negative'],
-            ['Number Of Tweets', str(0), str(0), str(0)]]
-
-    with open("static/CSV/singleTopic1.json", "w") as outfile:
-        json.dump(data, outfile)
-
-
-# CREATE THE JSON FILES
-def create_json_files_with_data():
-    # WRITE (POSITIVE, NEGATIVE, NEUTRAL) TO JSON FILE
-    data = [['Analysis', 'positive', 'neutral', 'negative'],
-            ['Number Of Tweets', str(sum(positive)), str(sum(neutral)), str(sum(negative))]]
-
-    with open("static/CSV/singleTopic1.json", "w") as outfile:
-        json.dump(data, outfile)
+def send_sentiment_data():
+    return sentiment_dict
 
 
 # STORE DATA IN A CSV FILE
 def create_csv_files(mined):
     csv_exsits = os.path.exists(
-        'static/CSV/singleTopic-{}.csv'.format(topic.replace(' ', "-")))  # Check if CSV exists
+        'static/CSV/singleTopic-{}.csv'.format(topic.replace(' OR ', "_").replace(' ', "-")))  # Check if CSV exists
     # Write to CSV file
-    with open('static/CSV/singleTopic-{}.csv'.format(topic.replace(' ', "-")), 'a', newline='',
+    with open('static/CSV/singleTopic-{}.csv'.format(topic.replace(' OR ', "_").replace(' ', "-")), 'a', newline='',
               encoding="utf-8-sig") as outputFile:
         writer = csv.DictWriter(outputFile, mined.keys())
 
@@ -149,19 +133,4 @@ def create_csv_files(mined):
         writer.writerow(mined)
     outputFile.close()
 
-
-# PLOT IN A BAR CHART
-def bar_chart():
-    x = ['Positive', 'Neutral', 'Negative']
-    h = [sum(positive), sum(neutral), sum(negative)]
-    c = ["blue", "grey", "green"]
-
-    plt.bar(x, h, align='center', color=c)
-    plt.xlabel("Sentiment")
-    plt.ylabel('Number of Tweets')
-    plt.title('The data is based around ({})'.format(topic))
-
-    plt.savefig('static/singleTopic-{}.png'.format(topic))
-    plt.show()
-
-# DONEEEEE
+# DONEEEE

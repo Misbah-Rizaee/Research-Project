@@ -23,8 +23,16 @@
     <div class="container">
         <form action="/static-data" method="post">
             <div class="form-group">
-                <label for="topic">Please enter the topic(s). Note: to search for more than one topic, please use space
-                    in between the words</label>
+                <label for="topic"><strong>Note: </strong>To search for tweets containing either the word "refugee" or
+                    "migrant", you pass in
+                    the string "refugee OR migrant". </label><br/>
+                <label for="topic"><strong>Note: </strong>To search for tweets containing both the words "refugee" and
+                    "migrant", you pass in
+                    the string "refugee migrant".</label><br/>
+                <label for="topic"><strong>Note: </strong>For example the string "(afghan refugee) OR (ukrainian
+                    refugee)" collects tweets
+                    which contain either the words "afghan" and "refugee" or "ukrainian" and "refugee".</label><br/>
+                <label for="topic">Please enter the topic(s).</label><br/>
                 <input class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
                        type="text" id="first_query" name="first_query"><br>
                 <label for="topic">Please enter the number of tweets:</label>
@@ -37,13 +45,13 @@
     </div>
     <div style="padding-bottom: 50px"></div>
     <div id="container"></div>
-    
+
     </body>
     <script>
         function myFunction() {
             var topic = document.getElementById("first_query");
             var num_of_tweets = document.getElementById("second_query");
-            globalQ = topic.value;
+
             if (topic !== null && topic.value === "" || isNaN(parseInt(num_of_tweets.value))) {
                 alert("Please Enter Valid Values");
                 return false;
@@ -72,7 +80,7 @@
                 dataRefreshRate: 2
             };
             options.title = {
-                text: 'Tweets have been analyzed. The data is based around (' + globalQ.split(" ").join(" & ").toLowerCase() + ')'
+                text: 'Sentiment status of the tweets'
             }
             Highcharts.chart('container', options);
         }

@@ -23,7 +23,12 @@
     <div class="container">
         <form action="/single-topic-live" method="post">
             <div class="form-group">
-                <label for="topic">Please enter the topic(s). Note: to search for more than one topic, please use space in between the words</label>
+                <label for="topic"><strong>Note: </strong>To search for tweets containing either the word "refugee" or
+                    "migrant", you pass in
+                    the string "refugee migrant". </label><br/>
+                <label for="topic"><strong>Note: </strong>For example the string "ukrainian refugee russia" collects
+                    tweets which contain at least one of these words.</label><br/>
+                <label for="topic">Please enter the topic(s).</label><br/>
                 <input class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
                        type="text" id="query" name="query"><br>
             </div>
@@ -40,7 +45,7 @@
     <script>
         function myFunction() {
             var topic = document.getElementById("query");
-            globalQ = topic.value;
+
             if (topic !== null && topic.value === "") {
                 alert("Please Enter a Query");
                 return false;
@@ -69,7 +74,7 @@
                 dataRefreshRate: 2
             };
             options.title = {
-                text: 'Tweets have been analyzed. The data is based around (' + globalQ.split(" ").join(" & ").toLowerCase() + ')'
+                text: 'Sentiment status of the tweets'
             }
             Highcharts.chart('container', options);
         }

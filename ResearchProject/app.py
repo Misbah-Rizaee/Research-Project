@@ -6,6 +6,7 @@ import singleTopicLiveClass
 import aboutApplicationClass
 import json
 import os
+import pandas as pd
 
 auth = tweepy.OAuthHandler(API_KEY, API_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
@@ -18,6 +19,7 @@ def home():
     return render_template('home.html')
 
 
+# STATIC DATA
 @app.route('/static-data', methods=['GET', 'POST'])
 def static_data_function():
     if request.method == "POST":
@@ -27,23 +29,23 @@ def static_data_function():
         return render_template('static-data.html')
 
 
-# STATIC_DATA (DISPLAY POSITIVE, NEGATIVE, NEUTRAL IN LIVE CHART)
 @app.route('/send_data_to_static_data', methods=['GET', 'POST'])
 def send_data_to_static_data():
-    if os.path.isfile("static/CSV/staticData1.json"):
-        file = open("static/CSV/staticData1.json")
-        data = json.load(file)
-        file.close()
+    send_data = staticDataClass.send_sentiment_data()
+    # SORT THE DICTIONARY ITEMS
+    send_data = dict(sorted(send_data.items()))
 
-        response = make_response(json.dumps(data))
-        response.content_type = 'application/json'
-        return "Analysis,Positive, Neutral, Negative \n Number Of Tweets," + data[1][1] + "," + data[1][2] + "," + \
-               data[1][3]
-    else:
-        print("File does not exist! FileNotFoundError has occurred")
+    # GET ONLY KEYS AND VALUES FROM THE DICTIONARY SEPARATED BY COMMA
+    send_data_key = ', '.join([str(elem) for elem in send_data.keys()])
+    send_data_value = ', '.join([str(elem) for elem in send_data.values()])
+
+    if not send_data:
         return '', 204
+    else:
+        return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
 
 
+# SINGLE TOPIC LIVE
 @app.route('/single-topic-live', methods=['GET', 'POST'])
 def single_topic_live():
     if request.method == "POST":
@@ -53,29 +55,82 @@ def single_topic_live():
         return render_template('single-topic-live.html')
 
 
-# SINGLE-TOPIC-LIVE (DISPLAY POSITIVE, NEGATIVE, NEUTRAL IN LIVE CHART)
 @app.route('/send_data_to_single_topic_live', methods=['GET', 'POST'])
 def send_data_to_single_topic_live():
-    if os.path.isfile("static/CSV/singleTopic1.json"):
-        file = open("static/CSV/singleTopic1.json")
-        data = json.load(file)
-        file.close()
+    send_data = singleTopicLiveClass.send_sentiment_data()
+    # SORT THE DICTIONARY ITEMS
+    send_data = dict(sorted(send_data.items()))
 
-        response = make_response(json.dumps(data))
-        response.content_type = 'application/json'
-        return "Analysis,Positive, Neutral, Negative \n Number Of Tweets," + data[1][1] + "," + data[1][2] + "," + \
-               data[1][3]
-    else:
-        print("File does not exist! FileNotFoundError has occurred")
+    # GET ONLY KEYS AND VALUES FROM THE DICTIONARY SEPARATED BY COMMA
+    send_data_key = ', '.join([str(elem) for elem in send_data.keys()])
+    send_data_value = ', '.join([str(elem) for elem in send_data.values()])
+
+    if not send_data:
         return '', 204
+    else:
+        return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
 
 
-@app.route('/about-application')
+# ABOUT APPLICATION
+@app.route('/about-application', methods=['GET', 'POST'])
 def about_application():
-    return render_template('about-application.html')
+    if request.method == 'POST':
+        file = request.form['input-file']
+        target = os.path.join(app.static_folder, file)
+        data = pd.read_csv(target)
+        aboutApplicationClass.start_analysing(data)
+        return '', 204
+    else:
+        return render_template('about-application.html')
+
+
+@app.route('/send_sentiment_data_to_about_application', methods=['GET', 'POST'])
+def send_sentiment_data_to_about_application():
+    send_data = aboutApplicationClass.send_sentiment_data()
+    # SORT THE DICTIONARY ITEMS
+    send_data = dict(sorted(send_data.items()))
+
+    # GET ONLY KEYS AND VALUES FROM THE DICTIONARY SEPARATED BY COMMA
+    send_data_key = ', '.join([str(elem) for elem in send_data.keys()])
+    send_data_value = ', '.join([str(elem) for elem in send_data.values()])
+
+    if not send_data:
+        return '', 204
+    else:
+        return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
+
+
+@app.route('/send_retweet_data_to_about_application', methods=['GET', 'POST'])
+def send_retweet_data_to_about_application():
+    send_data = aboutApplicationClass.send_retweet_data()
+    # SORT THE DICTIONARY ITEMS
+    send_data = dict(sorted(send_data.items()))
+
+    # GET ONLY KEYS AND VALUES FROM THE DICTIONARY SEPARATED BY COMMA
+    send_data_key = ', '.join([str(elem) for elem in send_data.keys()])
+    send_data_value = ', '.join([str(elem) for elem in send_data.values()])
+
+    if not send_data:
+        return '', 204
+    else:
+        return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
+
+
+@app.route('/send_average_data_to_about_application', methods=['GET', 'POST'])
+def send_average_data_to_about_application():
+    send_data_key, send_data_value = aboutApplicationClass.send_average_sentiment_data()
+
+    # GET ONLY KEYS AND VALUES FROM THE LIST SEPARATED BY COMMA
+    send_data_key = ', '.join([str(elem) for elem in send_data_key])
+    send_data_value = ', '.join([str(elem) for elem in send_data_value])
+
+    if not send_data_key and send_data_value:
+        return '', 204
+    else:
+        return "Analysis, " + str(send_data_key)[1:-1] + "\n Numbers," + str(send_data_value)[1:-1]
 
 
 if __name__ == '__main__':
     app.run()
 
-# DONEEEEE
+# DONEE
