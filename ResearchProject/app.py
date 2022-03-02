@@ -130,6 +130,34 @@ def send_average_data_to_about_application():
         return "Analysis, " + str(send_data_key)[1:-1] + "\n Numbers," + str(send_data_value)[1:-1]
 
 
+@app.route('/send_GPE_data_to_about_application', methods=['GET', 'POST'])
+def send_GPE_data_to_about_application():
+    send_data = aboutApplicationClass.send_GPE_name_entity_data()
+
+    # GET ONLY KEYS AND VALUES FROM THE DICTIONARY SEPARATED BY COMMA
+    send_data_key = ', '.join([str(elem) for elem in send_data.keys()])
+    send_data_value = ', '.join([str(elem) for elem in send_data.values()])
+
+    if not send_data:
+        return '', 204
+    else:
+        return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
+
+
+@app.route('/send_NORP_data_to_about_application', methods=['GET', 'POST'])
+def send_NORP_data_to_about_application():
+    send_data = aboutApplicationClass.send_NORP_name_entity_data()
+
+    # GET ONLY KEYS AND VALUES FROM THE DICTIONARY SEPARATED BY COMMA
+    send_data_key = ', '.join([str(elem) for elem in send_data.keys()])
+    send_data_value = ', '.join([str(elem) for elem in send_data.values()])
+
+    if not send_data:
+        return '', 204
+    else:
+        return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
+
+
 if __name__ == '__main__':
     app.run()
 

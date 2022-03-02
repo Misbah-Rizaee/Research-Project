@@ -62,18 +62,9 @@ def analyze_tweets(auth, topic, num_of_tweets):
 
         create_csv_files(mined)
 
-    # CREATE THE JSON FILES
-    # create_json_files_with_data()
-
     sentiment_dict['positive'] = sum(positive)
     sentiment_dict['neutral'] = sum(neutral)
     sentiment_dict['negative'] = sum(negative)
-
-    # PLOT A BAR CHART
-    # bar_chart()
-
-    # df = pd.DataFrame(text_list)
-    # print(df.to_string())
 
 
 def start_get_tweets(auth):
@@ -92,26 +83,6 @@ def clear_arrays():
     negative.clear()
     neutral.clear()
     sentiment_dict.clear()
-
-
-# FIX - CREATE EMPTY JSON FILES TO AVOID (No such file or directory: 'static/CSV/staticData1.json') ERROR
-# def create_empty_json_files():
-#     # CREATE SAMPLE JSON FILE
-#     data = [['Analysis', 'positive', 'neutral', 'negative'],
-#             ['Number Of Tweets', str(0), str(0), str(0)]]
-#
-#     with open("static/CSV/staticData1.json", "w") as outfile:
-#         json.dump(data, outfile)
-
-
-# CREATE THE JSON FILES
-# def create_json_files_with_data():
-#     # WRITE (POSITIVE, NEGATIVE, NEUTRAL) TO JSON FILE
-#     data = [['Analysis', 'positive', 'neutral', 'negative'],
-#             ['Number Of Tweets', str(sum(positive)), str(sum(neutral)), str(sum(negative))]]
-#
-#     with open("static/CSV/staticData1.json", "w") as outfile:
-#         json.dump(data, outfile)
 
 
 def send_sentiment_data():

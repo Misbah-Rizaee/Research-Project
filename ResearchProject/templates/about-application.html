@@ -13,7 +13,40 @@
         <script src="https://code.highcharts.com/modules/drilldown.js"></script>
 
         <style>
+            /* Float four columns side by side */
+            .column {
+                float: left;
+                width: 50%;
+                padding: 0 10px;
+            }
 
+            /* Remove extra left and right margins, due to padding */
+            .row {
+                margin: 0 -5px;
+            }
+
+            /* Clear floats after the columns */
+            .row:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            /* Responsive columns */
+            @media screen and (max-width: 600px) {
+                .column {
+                    width: 100%;
+                    display: block;
+                    margin-bottom: 20px;
+                }
+            }
+
+            /* Style the counter cards */
+            .card {
+                padding: 16px;
+                text-align: center;
+                border: none !important;
+            }
         </style>
     </head>
     <body>
@@ -40,14 +73,49 @@
                    class="btn btn-primary btn-lg btn-block" value="Start">
         </form>
     </div>
-    <div style="padding-bottom: 50px"></div>
-    <div id="container"></div>
 
     <div style="padding-bottom: 50px"></div>
-    <div id="container2"></div>
+{#    <div id="container"></div>#}
+{##}
+{#    <div style="padding-bottom: 50px"></div>#}
+{#    <div id="container2"></div>#}
+{##}
+{#    <div style="padding-bottom: 50px"></div>#}
+{#    <div id="container3"></div>#}
+
+    <div class="row">
+        <div class="column">
+            <div class="card">
+                <div id="container"></div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card">
+                <div id="container2"></div>
+            </div>
+        </div>
+    </div>
 
     <div style="padding-bottom: 50px"></div>
     <div id="container3"></div>
+    <div style="padding-bottom: 50px"></div>
+
+    <div class="row">
+        <div class="column">
+            <div class="card">
+                <div id="container4"></div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="card">
+                <div id="container5"></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="padding-bottom: 50px"></div>
 
     </body>
     <script>
@@ -150,6 +218,64 @@
                 text: 'Weekly mean of sentiment status'
             }
             Highcharts.chart('container3', options3);
+
+
+            // FOURTH CHART
+            const options4 = {
+                chart: {
+                    type: 'column',
+                    zoomType: 'xy'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Exposure '
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        animation: false,
+                    }
+                }
+            };
+
+            options4.data = {
+                csvURL: 'http://127.0.0.1:5000/send_GPE_data_to_about_application',
+                enablePolling: true,
+                dataRefreshRate: 10
+            };
+            options4.title = {
+                text: 'Countries, cities, states'
+            }
+            Highcharts.chart('container4', options4);
+
+
+            // FIFTH CHART
+            const options5 = {
+                chart: {
+                    type: 'column',
+                    zoomType: 'xy'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Exposure '
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        animation: false,
+                    }
+                }
+            };
+
+            options5.data = {
+                csvURL: 'http://127.0.0.1:5000/send_NORP_data_to_about_application',
+                enablePolling: true,
+                dataRefreshRate: 10
+            };
+            options5.title = {
+                text: 'Nationalities or religious or political groups'
+            }
+            Highcharts.chart('container5', options5);
         }
     </script>
     </html>
