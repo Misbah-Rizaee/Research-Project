@@ -166,11 +166,76 @@ def clear_dict():
     list_EVENT.clear()
 
 
+# SAVE CHARTS
+def add_value_label(x_list, y_list):
+    for i in range(len(x_list)):
+        # plt.text(i, y_list[i], y_list[i], ha="center")
+        plt.text(i, y_list[i] / 2, y_list[i], ha="center")
+
+
+def save_sentiment_chart():
+    send_data = dict(sorted(sentiment_dict.items()))
+    x = [k for k in send_data.keys()]
+    h = [v for v in send_data.values()]
+    c = ["cornflowerblue", "darkslategrey", "greenyellow"]
+
+    plt.bar(x, h, align='center', color=c, alpha=0.5)
+    plt.xlabel("Sentiment status")
+    plt.ylabel('Number of Tweets')
+    plt.title('Sentiment status of the tweets')
+    plt.grid(axis='y')
+    add_value_label(x, h)
+    plt.savefig('static/results/Sentiment-Analysis.png')
+    plt.show()
+
+
+def save_sum_retweets():
+    send_data = dict(sorted(retweet_dict.items()))
+    x = [k for k in send_data.keys()]
+    h = [v for v in send_data.values()]
+    c = ["orange", "mediumturquoise", "gray"]
+
+    plt.bar(x, h, align='center', color=c, alpha=0.5)
+    plt.xlabel("Sentiment status")
+    plt.ylabel('Sum of retweets')
+    plt.title('Sum of retweets per Sentiment status')
+    plt.grid(axis='y')
+    add_value_label(x, h)
+    plt.savefig('static/results/Sentiment-Sum-Retweets.png', bbox_inches='tight')
+    plt.show()
+
+
+def save_weekly_sentiment():
+    x = created_at_list[0]
+    h = analysis_score_list[0]
+
+    plt.bar(x, h, align='center',alpha=0.5)
+    plt.xlabel("Weeks")
+    plt.ylabel('Weekly mean analysis score')
+    plt.title('Weekly mean of analysis scores')
+    plt.grid(axis='y')
+    plt.savefig('static/results/Sentiment-Mean-Score.png', bbox_inches='tight')
+    plt.show()
+
+
+def save_name_entity():
+    pass
+
+
 def start_analysing(data):
     clear_dict()
+
     get_sentiments(data)
+    save_sentiment_chart()
+
     get_sum_retweets(data)
+    save_sum_retweets()
+
     get_weekly_sentiment(data)
+    save_weekly_sentiment()
+
     get_name_entity(data)
+    save_name_entity()
+
 
 # DONEEE
