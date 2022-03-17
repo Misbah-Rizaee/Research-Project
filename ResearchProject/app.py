@@ -3,7 +3,8 @@ import tweepy
 from twitter_auth import API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 import staticDataClass
 import singleTopicLiveClass
-import aboutApplicationClass
+import sentimentAnalysisClass
+import topicModelingClass
 import json
 import os
 import pandas as pd
@@ -71,22 +72,22 @@ def send_data_to_single_topic_live():
         return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
 
 
-# ABOUT APPLICATION
-@app.route('/about-application', methods=['GET', 'POST'])
-def about_application():
+# SENTIMENT ANALYSIS
+@app.route('/sentiment-analysis', methods=['GET', 'POST'])
+def sentiment_analysis():
     if request.method == 'POST':
         file = request.form['input-file']
         target = os.path.join(app.static_folder, file)
         data = pd.read_csv(target)
-        aboutApplicationClass.start_analysing(data)
+        sentimentAnalysisClass.start_analysing(data)
         return '', 204
     else:
-        return render_template('about-application.html')
+        return render_template('sentiment-analysis.html')
 
 
-@app.route('/send_sentiment_data_to_about_application', methods=['GET', 'POST'])
-def send_sentiment_data_to_about_application():
-    send_data = aboutApplicationClass.send_sentiment_data()
+@app.route('/send_sentiment_data_to_sentiment_analysis', methods=['GET', 'POST'])
+def send_sentiment_data_to_sentiment_analysis():
+    send_data = sentimentAnalysisClass.send_sentiment_data()
     # SORT THE DICTIONARY ITEMS
     send_data = dict(sorted(send_data.items()))
 
@@ -100,9 +101,9 @@ def send_sentiment_data_to_about_application():
         return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
 
 
-@app.route('/send_retweet_data_to_about_application', methods=['GET', 'POST'])
-def send_retweet_data_to_about_application():
-    send_data = aboutApplicationClass.send_retweet_data()
+@app.route('/send_retweet_data_to_sentiment_analysis', methods=['GET', 'POST'])
+def send_retweet_data_to_sentiment_analysis():
+    send_data = sentimentAnalysisClass.send_retweet_data()
     # SORT THE DICTIONARY ITEMS
     send_data = dict(sorted(send_data.items()))
 
@@ -116,9 +117,9 @@ def send_retweet_data_to_about_application():
         return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
 
 
-@app.route('/send_average_data_to_about_application', methods=['GET', 'POST'])
-def send_average_data_to_about_application():
-    send_data_key, send_data_value = aboutApplicationClass.send_average_sentiment_data()
+@app.route('/send_average_data_to_sentiment_analysis', methods=['GET', 'POST'])
+def send_average_data_to_sentiment_analysis():
+    send_data_key, send_data_value = sentimentAnalysisClass.send_average_sentiment_data()
 
     # GET ONLY KEYS AND VALUES FROM THE LIST SEPARATED BY COMMA
     send_data_key = ', '.join([str(elem) for elem in send_data_key])
@@ -130,9 +131,9 @@ def send_average_data_to_about_application():
         return "Analysis, " + str(send_data_key)[1:-1] + "\n Numbers," + str(send_data_value)[1:-1]
 
 
-@app.route('/send_GPE_data_to_about_application', methods=['GET', 'POST'])
-def send_GPE_data_to_about_application():
-    send_data = aboutApplicationClass.send_GPE_name_entity_data()
+@app.route('/send_GPE_data_to_sentiment_analysis', methods=['GET', 'POST'])
+def send_GPE_data_to_sentiment_analysis():
+    send_data = sentimentAnalysisClass.send_GPE_name_entity_data()
 
     # GET ONLY KEYS AND VALUES FROM THE DICTIONARY SEPARATED BY COMMA
     send_data_key = ', '.join([str(elem) for elem in send_data.keys()])
@@ -144,9 +145,9 @@ def send_GPE_data_to_about_application():
         return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
 
 
-@app.route('/send_NORP_data_to_about_application', methods=['GET', 'POST'])
-def send_NORP_data_to_about_application():
-    send_data = aboutApplicationClass.send_NORP_name_entity_data()
+@app.route('/send_NORP_data_to_sentiment_analysis', methods=['GET', 'POST'])
+def send_NORP_data_to_sentiment_analysis():
+    send_data = sentimentAnalysisClass.send_NORP_name_entity_data()
 
     # GET ONLY KEYS AND VALUES FROM THE DICTIONARY SEPARATED BY COMMA
     send_data_key = ', '.join([str(elem) for elem in send_data.keys()])
@@ -156,6 +157,18 @@ def send_NORP_data_to_about_application():
         return '', 204
     else:
         return "Analysis, " + send_data_key + "\n Numbers," + send_data_value
+
+
+@app.route('/topic-modeling', methods=['GET', 'POST'])
+def topic_modeling():
+    if request.method == 'POST':
+        file = request.form['input-file']
+        target = os.path.join(app.static_folder, file)
+        data = pd.read_csv(target)
+        topicModelingClass.start_analysing(data)
+        return '', 204
+    else:
+        return render_template('topic-modeling.html')
 
 
 if __name__ == '__main__':

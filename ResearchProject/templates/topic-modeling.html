@@ -1,0 +1,48 @@
+{% extends 'partial/layout-topic-modeling.html' %}
+
+{% block content %}
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>results page</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+        <style>
+        </style>
+    </head>
+    <body>
+
+    <div class="container">
+        <form action="/topic-modeling" method="post">
+            <div class="form-group">
+                <label for="topic">AAA: </label><br/>
+                <label for="topic"><strong>AAA: </strong>AAA.</label><br/><br/>
+                <label for="topic">Please choose a csv file from the static directory of the project:</label><br/>
+                <div class="btn btn-primary btn-lg btn-block">
+                    <label class="upload-btn">
+                        <input type="file" id="input-file" name="input-file" style="display:none" onchange="changeText()"/>
+                        <span id="selectedFileName" name="selectedFileName">Browse</span>
+                    </label>
+                </div>
+            </div>
+            <input onclick="return myFunction()" type="submit" name="start_button"
+                   class="btn btn-primary btn-lg btn-block" value="Start">
+        </form>
+    </div>
+
+    <div style="padding-bottom: 50px"></div>
+
+    </body>
+    <script>
+        function changeText() {
+            var y = document.getElementById("input-file").files[0].name;
+            document.getElementById("selectedFileName").innerHTML = y;
+        }
+    </script>
+    </html>
+{% endblock %}
