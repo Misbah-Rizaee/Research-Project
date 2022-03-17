@@ -218,8 +218,40 @@ def save_weekly_sentiment():
     plt.show()
 
 
-def save_name_entity():
-    pass
+def save_name_entity_GPE():
+    counter_GPE = Counter(list_GPE)
+    most_occur_GPE = dict(counter_GPE.most_common(10))
+
+    x = [k for k in most_occur_GPE.keys()]
+    h = [v for v in most_occur_GPE.values()]
+
+    plt.bar(x, h, align='center', alpha=0.5)
+    plt.xlabel("countries, cities and states")
+    plt.ylabel('Number of times appeared')
+    plt.title('Name entity recognition (countries, cities and states)')
+    plt.grid(axis='y')
+    plt.xticks(rotation=90)
+    add_value_label(x, h)
+    plt.savefig('static/results/Name-Entity-GPE.png', bbox_inches='tight')
+    plt.show()
+
+
+def save_name_entity_NORP():
+    counter_NORP = Counter(list_NORP)
+    most_occur_NORP = dict(counter_NORP.most_common(10))
+
+    x = [k for k in most_occur_NORP.keys()]
+    h = [v for v in most_occur_NORP.values()]
+
+    plt.bar(x, h, align='center', alpha=0.5)
+    plt.xlabel("nationalities, religious and political groups")
+    plt.ylabel('Number of times appeared')
+    plt.title('Name entity recognition (nationalities, religious and political groups)')
+    plt.grid(axis='y')
+    plt.xticks(rotation=90)
+    add_value_label(x, h)
+    plt.savefig('static/results/Name-Entity-NORP.png', bbox_inches='tight')
+    plt.show()
 
 
 def start_analysing(data):
@@ -235,7 +267,8 @@ def start_analysing(data):
     save_weekly_sentiment()
 
     get_name_entity(data)
-    save_name_entity()
+    save_name_entity_GPE()
+    save_name_entity_NORP()
 
 
-# DONEEE
+# DONEEEE
