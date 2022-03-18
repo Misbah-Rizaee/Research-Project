@@ -12,6 +12,9 @@
         <script src="https://code.highcharts.com/modules/data.js"></script>
         <script src="https://code.highcharts.com/modules/drilldown.js"></script>
 
+{#        <script src="https://code.highcharts.com/modules/exporting.js"></script>#}
+{#        <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>#}
+
         <style>
             /* Float four columns side by side */
             .column {
@@ -54,13 +57,11 @@
     <div class="container">
         <form action="/sentiment-analysis" method="post">
             <div class="form-group">
-                <label for="topic">Machine learning algorithms used: </label><br/>
+                <label for="topic">Machine learning algorithm(s) used: </label><br/>
                 <label for="topic"><strong>Sentiment analysis: </strong>To analyze and find the emotion or intent behind
                     every tweet.</label><br/>
-                <label for="topic"><strong>Topic modelling (LDA): </strong>To find out the different topics that these
-                    tweets cover and group them by those topics.</label><br/>
-                <label for="topic"><strong>word2vec: </strong>To make highly accurate guesses about a word’s meaning based on
-                    past appearances.</label><br/><br/>
+                <label for="topic"><strong>Name entity recognition: </strong>To identify named entities in a text and
+                    classify them into predefined categories.</label><br/><br/>
                 <label for="topic">Please choose a csv file from the static directory of the project:</label><br/>
                 <div class="btn btn-primary btn-lg btn-block">
                     <label class="upload-btn">
@@ -75,13 +76,6 @@
     </div>
 
     <div style="padding-bottom: 50px"></div>
-{#    <div id="container"></div>#}
-{##}
-{#    <div style="padding-bottom: 50px"></div>#}
-{#    <div id="container2"></div>#}
-{##}
-{#    <div style="padding-bottom: 50px"></div>#}
-{#    <div id="container3"></div>#}
 
     <div class="row">
         <div class="column">
@@ -132,43 +126,51 @@
                 return false;
             }
 
-            const options = {
+            const chart = Highcharts.chart('container', {
                 chart: {
                     type: 'column',
                     zoomType: 'xy'
                 },
                 yAxis: {
                     title: {
-                        text: 'Exposure '
+                        text: 'tweets '
+                    }
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
                     }
                 },
                 plotOptions: {
                     series: {
                         animation: false
                     }
-                }
-            };
-
-            options.data = {
-                csvURL: 'http://127.0.0.1:5000/send_sentiment_data_to_sentiment_analysis',
-                enablePolling: true,
-                dataRefreshRate: 2
-            };
-            options.title = {
-                text: 'Sentiment status of the tweets'
-            }
-            Highcharts.chart('container', options);
+                },
+                data: {
+                    csvURL: 'http://127.0.0.1:5000/send_sentiment_data_to_sentiment_analysis',
+                    enablePolling: true,
+                    dataRefreshRate: 3
+                },
+                title: {
+                    text: 'Sentiment status of the tweets'
+                },
+            });
 
 
             // SECOND CHART
-            const options2 = {
+            const chart2 = Highcharts.chart('container2', {
                 chart: {
                     type: 'column',
                     zoomType: 'xy'
                 },
                 yAxis: {
                     title: {
-                        text: 'Exposure '
+                        text: 'retweets '
+                    }
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
                     }
                 },
                 plotOptions: {
@@ -176,29 +178,31 @@
                         animation: false
                     }
                 },
-                colors: ['#FFC300', '#48C9B0', '#AAB7B8']
-            };
-
-            options2.data = {
-                csvURL: 'http://127.0.0.1:5000/send_retweet_data_to_sentiment_analysis',
-                enablePolling: true,
-                dataRefreshRate: 2
-            };
-            options2.title = {
-                text: 'Sum of retweets per sentiment status'
-            }
-            Highcharts.chart('container2', options2);
+                data: {
+                    csvURL: 'http://127.0.0.1:5000/send_retweet_data_to_sentiment_analysis',
+                    enablePolling: true,
+                    dataRefreshRate: 3
+                },
+                title: {
+                    text: 'Sum of retweets per sentiment status'
+                },
+            });
 
 
             // THIRD CHART
-            const options3 = {
+            const chart3 = Highcharts.chart('container3', {
                 chart: {
                     type: 'column',
                     zoomType: 'xy'
                 },
                 yAxis: {
                     title: {
-                        text: 'Exposure '
+                        text: 'score '
+                    }
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
                     }
                 },
                 plotOptions: {
@@ -206,76 +210,82 @@
                         animation: false,
                         showInLegend: false
                     }
-                }
-            };
-
-            options3.data = {
-                csvURL: 'http://127.0.0.1:5000/send_average_data_to_sentiment_analysis',
-                enablePolling: true,
-                dataRefreshRate: 2
-            };
-            options3.title = {
-                text: 'Weekly mean of sentiment status'
-            }
-            Highcharts.chart('container3', options3);
+                },
+                data: {
+                    csvURL: 'http://127.0.0.1:5000/send_average_data_to_sentiment_analysis',
+                    enablePolling: true,
+                    dataRefreshRate: 3
+                },
+                title: {
+                    text: 'Weekly mean of sentiment status'
+                },
+            });
 
 
             // FOURTH CHART
-            const options4 = {
+            const chart4 = Highcharts.chart('container4', {
                 chart: {
                     type: 'column',
                     zoomType: 'xy'
                 },
                 yAxis: {
                     title: {
-                        text: 'Exposure '
+                        text: 'occurrence '
+                    }
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
                     }
                 },
                 plotOptions: {
                     series: {
-                        animation: false,
+                        animation: false
                     }
-                }
-            };
+                },
+                data: {
+                    csvURL: 'http://127.0.0.1:5000/send_GPE_data_to_sentiment_analysis',
+                    enablePolling: true,
+                    dataRefreshRate: 3
+                },
+                title: {
+                    text: 'Countries, cities, states'
+                },
+            });
 
-            options4.data = {
-                csvURL: 'http://127.0.0.1:5000/send_GPE_data_to_sentiment_analysis',
-                enablePolling: true,
-                dataRefreshRate: 10
-            };
-            options4.title = {
-                text: 'Countries, cities, states'
-            }
-            Highcharts.chart('container4', options4);
+
 
 
             // FIFTH CHART
-            const options5 = {
+            const chart5 = Highcharts.chart('container5', {
                 chart: {
                     type: 'column',
                     zoomType: 'xy'
                 },
                 yAxis: {
                     title: {
-                        text: 'Exposure '
+                        text: 'occurrence '
+                    }
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
                     }
                 },
                 plotOptions: {
                     series: {
-                        animation: false,
+                        animation: false
                     }
-                }
-            };
-
-            options5.data = {
-                csvURL: 'http://127.0.0.1:5000/send_NORP_data_to_sentiment_analysis',
-                enablePolling: true,
-                dataRefreshRate: 10
-            };
-            options5.title = {
-                text: 'Nationalities or religious or political groups'
-            }
-            Highcharts.chart('container5', options5);
+                },
+                data: {
+                    csvURL: 'http://127.0.0.1:5000/send_NORP_data_to_sentiment_analysis',
+                    enablePolling: true,
+                    dataRefreshRate: 3
+                },
+                title: {
+                    text: 'Nationalities or religious or political groups'
+                },
+            });
         }
     </script>
     </html>

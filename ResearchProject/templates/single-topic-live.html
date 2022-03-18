@@ -51,32 +51,35 @@
                 return false;
             }
 
-            const options = {
+            const chart = Highcharts.chart('container', {
                 chart: {
                     type: 'column',
                     zoomType: 'xy'
                 },
                 yAxis: {
                     title: {
-                        text: 'Exposure '
+                        text: 'tweets '
+                    }
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
                     }
                 },
                 plotOptions: {
                     series: {
                         animation: false
                     }
-                }
-            };
-
-            options.data = {
-                csvURL: 'http://127.0.0.1:5000/send_data_to_single_topic_live',
-                enablePolling: true,
-                dataRefreshRate: 2
-            };
-            options.title = {
-                text: 'Sentiment status of the tweets'
-            }
-            Highcharts.chart('container', options);
+                },
+                data: {
+                    csvURL: 'http://127.0.0.1:5000/send_data_to_single_topic_live',
+                    enablePolling: true,
+                    dataRefreshRate: 3
+                },
+                title: {
+                    text: 'Sentiment status of the tweets'
+                },
+            });
         }
     </script>
     </html>

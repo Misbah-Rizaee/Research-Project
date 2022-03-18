@@ -180,8 +180,8 @@ def save_sentiment_chart():
     c = ["cornflowerblue", "darkslategrey", "greenyellow"]
 
     plt.bar(x, h, align='center', color=c, alpha=0.5)
-    plt.xlabel("Sentiment status")
-    plt.ylabel('Number of Tweets')
+    # plt.xlabel("sentiment status")
+    plt.ylabel('tweets')
     plt.title('Sentiment status of the tweets')
     plt.grid(axis='y')
     add_value_label(x, h)
@@ -196,8 +196,8 @@ def save_sum_retweets():
     c = ["orange", "mediumturquoise", "gray"]
 
     plt.bar(x, h, align='center', color=c, alpha=0.5)
-    plt.xlabel("Sentiment status")
-    plt.ylabel('Sum of retweets')
+    # plt.xlabel("sentiment status")
+    plt.ylabel('retweets')
     plt.title('Sum of retweets per Sentiment status')
     plt.grid(axis='y')
     add_value_label(x, h)
@@ -210,8 +210,8 @@ def save_weekly_sentiment():
     h = analysis_score_list[0]
 
     plt.bar(x, h, align='center',alpha=0.5)
-    plt.xlabel("Weeks")
-    plt.ylabel('Weekly mean analysis score')
+    # plt.xlabel("weeks")
+    plt.ylabel('score')
     plt.title('Weekly mean of analysis scores')
     plt.grid(axis='y')
     plt.savefig('static/results/Sentiment-Mean-Score.png', bbox_inches='tight')
@@ -226,8 +226,8 @@ def save_name_entity_GPE():
     h = [v for v in most_occur_GPE.values()]
 
     plt.bar(x, h, align='center', alpha=0.5)
-    plt.xlabel("countries, cities and states")
-    plt.ylabel('Number of times appeared')
+    # plt.xlabel("countries, cities and states")
+    plt.ylabel('occurrence')
     plt.title('Name entity recognition (countries, cities and states)')
     plt.grid(axis='y')
     plt.xticks(rotation=90)
@@ -244,8 +244,8 @@ def save_name_entity_NORP():
     h = [v for v in most_occur_NORP.values()]
 
     plt.bar(x, h, align='center', alpha=0.5)
-    plt.xlabel("nationalities, religious and political groups")
-    plt.ylabel('Number of times appeared')
+    # plt.xlabel("nationalities, religious and political groups")
+    plt.ylabel('occurrence')
     plt.title('Name entity recognition (nationalities, religious and political groups)')
     plt.grid(axis='y')
     plt.xticks(rotation=90)
