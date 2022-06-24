@@ -54,11 +54,11 @@ def visualize_the_topics(lda_model, bow_corpus, dictionary):
 
 
 def topic_modelling():
-    # data = pd.read_csv("csv/old_tweetsR.csv")
+    data = pd.read_csv("csv/old_tweets.csv")
 
-    file_names = ['csv/old_tweetsR.csv', 'csv/old_tweetsC.csv']
-    data = pd.concat((pd.read_csv(i, index_col=[0]) for i in file_names)).reset_index(drop=True)
-    data = data.sample(frac=1)  # Shuffle the rows
+    # file_names = ['csv/old_tweetsR.csv', 'csv/old_tweetsC.csv']
+    # data = pd.concat((pd.read_csv(i, index_col=[0]) for i in file_names)).reset_index(drop=True)
+    # data = data.sample(frac=1)  # Shuffle the rows
 
     processed_corpus = preprocess_tweets(data['text'])
 
