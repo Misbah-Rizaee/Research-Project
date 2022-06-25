@@ -5,6 +5,7 @@ import re
 import string
 import contractions
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from Remove_emoji import remove_emoji
 
 title = "ukrainian refugees"
 num = 20
@@ -18,12 +19,14 @@ def preprocess(text):
     # Fixes contractions such as "you're" to "you are"
     text = contractions.fix(text)
 
-    # Remove URL
-    text = re.sub(r"http\S+", " ", text)
+    text = re.sub(r"http\S+", " ", text)  # Remove URL
     text = ''.join(i for i in text if i not in string.punctuation)  # Remove the punctuations
     text = ''.join([i for i in text if not i.isdigit()])  # Remove the numbers
     text = ' '.join(text.split())
+    text = remove_emoji(text)  # Remove emoji
+
     return text
+
 
 def collect_tweets():
     auth = tweepy.OAuthHandler(API_KEY, API_SECRET)
