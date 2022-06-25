@@ -7,7 +7,7 @@ import time
 import contractions
 import string
 import pandas as pd
-from remove_emoji import remove_emoji
+from remove_emoji_class import remove_emoji
 
 topic = "(ukraine OR ukrainian) (refugee OR (asylum seeker) OR migrant OR migration OR Immigrant OR immigration)"
 num_of_tweets = 999

@@ -5,7 +5,7 @@ import re
 import string
 import contractions
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from remove_emoji import remove_emoji
+from remove_emoji_class import remove_emoji
 
 title = "ukrainian refugees"
 num = 20
