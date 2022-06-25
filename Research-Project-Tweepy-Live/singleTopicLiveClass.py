@@ -4,6 +4,7 @@ import app
 import contractions
 import string
 import pandas as pd
+from remove_emoji_class import remove_emoji
 
 from flask import render_template, request
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -34,17 +35,18 @@ sentiment_dict = {}
 
 # Clean data
 def preprocess(text):
-    # To lower case
+    # TO LOWER CASE
     text = text.lower()
 
     # Fixes contractions such as "you're" to "you are"
     text = contractions.fix(text)
 
-    # Remove URL
-    text = re.sub(r"http\S+", " ", text)
+    text = re.sub(r"http\S+", " ", text)  # Remove URL
     text = ''.join(i for i in text if i not in string.punctuation)  # Remove the punctuations
     text = ''.join([i for i in text if not i.isdigit()])  # Remove the numbers
     text = ' '.join(text.split())
+    text = remove_emoji(text)  # Remove emoji
+
     return text
 
 
