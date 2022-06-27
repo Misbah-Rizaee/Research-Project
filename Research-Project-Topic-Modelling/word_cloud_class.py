@@ -29,6 +29,7 @@ def word_cloud():
     wordcloud = WordCloud(width=1000, height=1000, margin=0, background_color='white',
                           colormap='tab10').generate(processed_corpus)
 
+    plt.figure(figsize=(20, 20))  # Setting the size to 2000x2000
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
     plt.margins(x=0, y=0)
