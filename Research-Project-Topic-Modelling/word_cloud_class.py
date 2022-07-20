@@ -22,7 +22,7 @@ def preprocess_tweets(corpus):
 
 
 def word_cloud():
-    data = pd.read_csv("csv/old_tweets.csv")
+    data = pd.read_csv("csv/old_tweets-Afghanistan.csv")
     processed_corpus = preprocess_tweets(data['text'])
 
     # Creating the word cloud object
@@ -33,4 +33,5 @@ def word_cloud():
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
     plt.margins(x=0, y=0)
+    plt.savefig('result/WordCloud.png', bbox_inches='tight')
     plt.show()

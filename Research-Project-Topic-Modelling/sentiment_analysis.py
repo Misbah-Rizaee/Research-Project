@@ -50,10 +50,8 @@ def sum_retweets_sentiment(data):
 
 
 def sentiment_analysis():
-    # data = pd.read_csv(
-    #     "csv/staticData-(ukraine_ukrainian)-(refugee_(asylum-seeker)_migrant_migration_Immigrant_immigration).csv")
 
-    data = pd.read_csv("csv/staticData-(afghanistan-afghan)-(refugee-refugees).csv")
+    data = pd.read_csv("csv/old_tweets.csv")
 
     # NORMAL SENTIMENT
     normal_sentiment(data)
