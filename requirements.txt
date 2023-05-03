@@ -10,5 +10,5 @@ spacy==3.3.0
 tweepy==4.4.0
 matplotlib==3.5.2
 contractions==0.1.72
-flask==2.1.2
+flask==2.2.5
 wordcloud==1.8.1
